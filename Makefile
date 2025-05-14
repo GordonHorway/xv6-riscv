@@ -141,6 +141,7 @@ UPROGS=\
 	$U/_zombie\
 	$U/_rm2\
 	$U/_mem\
+	$U/_uname\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
