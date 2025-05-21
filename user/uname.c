@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[]){
 
-    write(1, "xv6\n", 4);
+    write(1, "xv6\n", 5);
 
     exit(0);
 }

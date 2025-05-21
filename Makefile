@@ -142,6 +142,7 @@ UPROGS=\
 	$U/_rm2\
 	$U/_mem\
 	$U/_uname\
+	$U/_exectime\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

@@ -4,10 +4,6 @@
 
 #define NULL 0L
 
-// dont forget to modify the makefile for this new source code
-
-// printf or write????
-
 int main(int argc, char *argv[]){
 
     if(argc < 2){
@@ -23,8 +19,6 @@ int main(int argc, char *argv[]){
 
     args[argc - 1] = NULL;
 
-    printf("%s\n", args[0]); // remove later, this is just here to silence an error
-
     int pid = fork();
 
     if(pid == -1){
@@ -32,7 +26,7 @@ int main(int argc, char *argv[]){
         exit(1);
     }
 
-    int start, stop;
+    int start = 0, stop = 0;
 
     if(pid == 0){
         start = uptime();
