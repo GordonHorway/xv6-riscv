@@ -31,9 +31,9 @@ int main(int argc, char *argv[]){
     if(pid == 0){
         start = uptime();
         printf("uptime: %d\n", start);
-        int ret = exec(args[0], args); // why args[0]??
+        int ret = exec(args[0], args);
         if(ret == -1){
-            printf("exec failed...\n");
+            write(2, "exec failed...\n", 16);
             exit(1);
         }
     }
