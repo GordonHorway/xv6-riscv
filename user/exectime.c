@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
         printf("uptime: %d\n", start);
         int ret = exec(args[0], args); // why args[0]??
         if(ret == -1){
-            printf("exec failed...\n");
+            write(2, "exec failed...\n", 16);
             exit(1);
         }
     }
