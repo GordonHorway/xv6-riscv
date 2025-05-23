@@ -176,6 +176,8 @@ uartgetc(void)
 void
 uartintr(void)
 {
+  // printf("Hi\n");
+
   // read and process incoming characters.
   while(1){
     int c = uartgetc();

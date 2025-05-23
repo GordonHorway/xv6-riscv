@@ -7,6 +7,8 @@ main(int argc, char *argv[])
 {
   int i;
 
+  printf("****** echo echo echo ******\n"); // It do be working tho...
+
   for(i = 1; i < argc; i++){
     write(1, argv[i], strlen(argv[i]));
     if(i + 1 < argc){
