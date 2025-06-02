@@ -148,6 +148,8 @@ main(void)
   static char buf[100];
   int fd;
 
+  int ret = open("sh_history", O_CREATE | O_WRONLY);
+
   // Ensure that three file descriptors are open.
   while((fd = open("console", O_RDWR)) >= 0){
     if(fd >= 3){
@@ -158,6 +160,7 @@ main(void)
 
   // Read and run input commands.
   while(getcmd(buf, sizeof(buf)) >= 0){
+    write(ret, buf, sizeof(buf));
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
