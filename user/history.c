@@ -6,7 +6,10 @@ int main(int argc, char **argv){
 
     char *args[] = {"cat", "sh_history", 0};
 
-    exec(args[0], args);
+    if(exec(args[0], args) < 0){
+        fprintf(2, "exec failure\n");
+        exit(1);
+    }
 
     return 0;
 }
