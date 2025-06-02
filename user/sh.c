@@ -148,7 +148,7 @@ main(void)
   static char buf[100];
   int fd;
 
-  int ret = open("sh_history", O_CREATE | O_WRONLY);
+  int ret = open("sh_history", O_CREATE | O_WRONLY | O_TRUNC);
 
   // Ensure that three file descriptors are open.
   while((fd = open("console", O_RDWR)) >= 0){
