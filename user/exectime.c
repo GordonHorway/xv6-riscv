@@ -43,5 +43,7 @@ int main(int argc, char *argv[]){
     stop = uptime();
     printf("uptime: %d\n", stop);
 
+    // printf("This is just a test of calling getppid() function: %d\n", getppid());
+
     exit(0);
 }
