@@ -144,6 +144,7 @@ UPROGS=\
 	$U/_exectime\
 	$U/_history\
 	$U/_getppid\
+	$U/_clear\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
