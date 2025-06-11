@@ -717,8 +717,8 @@ pstate(void){
   }
   printf("total: %d\n", total);
   for(int i = 0; i < NCPU; i++){
-    struct cpu *c = &cpus[i];
-    struct proc *p = c->proc;
+    // struct cpu *c = &cpus[i];
+    struct proc *p = (&cpus[i])->proc;
     if(p != 0){
       printf("cpu %d: running process %d\n", i, p->pid);
     }
