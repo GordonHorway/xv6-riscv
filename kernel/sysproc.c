@@ -28,6 +28,11 @@ sys_getppid(void)
 }
 
 uint64
+sys_pstate(void){
+  return pstate();
+}
+
+uint64
 sys_fork(void)
 {
   return fork();

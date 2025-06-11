@@ -693,3 +693,35 @@ procdump(void)
     printf("\n");
   }
 }
+
+int 
+pstate(void){
+  struct proc *p;
+    static char *procstates[] = {
+  [UNUSED]    "unused",
+  [USED]      "used",
+  [SLEEPING]  "SLEEPING",
+  [RUNNABLE]  "RUNNABLE",
+  [RUNNING]   "RUNNING  ",
+  [ZOMBIE]    "zombie"
+  };
+  // Fix the formatting
+  printf("pid\tname\tstate\t\tparent\n");
+  printf("--------------------------------------\n");
+  int total = 0;
+  for(p = proc; p < &proc[NPROC]; p++){
+    if(p->state == SLEEPING || p->state == RUNNABLE || p->state == RUNNING){
+      total++;
+      printf("%d\t%s\t%s\t%s\n", p->pid, p->name, procstates[p->state], (p->pid == 1 ? "(init)" : p->parent->name));
+    }
+  }
+  printf("total: %d\n", total);
+  for(int i = 0; i < NCPU; i++){
+    struct cpu *c = &cpus[i];
+    struct proc *p = c->proc;
+    if(p != 0){
+      printf("cpu %d: running process %d\n", i, p->pid);
+    }
+  }
+  return 0;
+}

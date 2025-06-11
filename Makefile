@@ -145,6 +145,8 @@ UPROGS=\
 	$U/_history\
 	$U/_getppid\
 	$U/_clear\
+	$U/_pstate\
+	$U/_busy\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
