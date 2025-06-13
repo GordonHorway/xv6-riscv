@@ -694,6 +694,7 @@ procdump(void)
   }
 }
 
+// Prints out pid, name, status and parent for each process that is running, runnable or sleeping
 int 
 pstate(void){
   struct proc *p;
@@ -705,7 +706,6 @@ pstate(void){
   [RUNNING]   "RUNNING  ",
   [ZOMBIE]    "zombie"
   };
-  // Fix the formatting
   printf("pid\tname\tstate\t\tparent\n");
   printf("--------------------------------------\n");
   int total = 0;
@@ -717,7 +717,6 @@ pstate(void){
   }
   printf("total: %d\n", total);
   for(int i = 0; i < NCPU; i++){
-    // struct cpu *c = &cpus[i];
     struct proc *p = (&cpus[i])->proc;
     if(p != 0){
       printf("cpu %d: running process %d\n", i, p->pid);
