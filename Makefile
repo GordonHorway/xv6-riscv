@@ -140,6 +140,8 @@ UPROGS=\
 	$U/_wc\
 	$U/_zombie\
 	$U/_exectime\
+	$U/_pstate\
+	$U/_busy\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
