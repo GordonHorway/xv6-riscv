@@ -698,21 +698,19 @@ procdump(void)
 int 
 pstate(void){
   struct proc *p;
-    static char *procstates[] = {
-  [UNUSED]    "unused",
-  [USED]      "used",
+    static char *valid_procstates[] = {
   [SLEEPING]  "SLEEPING",
   [RUNNABLE]  "RUNNABLE",
-  [RUNNING]   "RUNNING  ",
-  [ZOMBIE]    "zombie"
+  [RUNNING]   "RUNNING  "
   };
   printf("pid\tname\tstate\t\tparent\n");
   printf("--------------------------------------\n");
   int total = 0;
   for(p = proc; p < &proc[NPROC]; p++){
-    if(p->state == SLEEPING || p->state == RUNNABLE || p->state == RUNNING){
+    enum procstate pstate = p->state;
+    if(pstate == SLEEPING || pstate == RUNNABLE || pstate == RUNNING){
       total++;
-      printf("%d\t%s\t%s\t%s\n", p->pid, p->name, procstates[p->state], (p->pid == 1 ? "(init)" : p->parent->name));
+      printf("%d\t%s\t%s\t%s\n", p->pid, p->name, valid_procstates[pstate], (p->pid == 1 ? "(init)" : p->parent->name));
     }
   }
   printf("total: %d\n", total);
