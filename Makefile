@@ -140,6 +140,7 @@ UPROGS=\
 	$U/_wc\
 	$U/_zombie\
 	$U/_exectime\
+	$U/_history\
 	$U/_pstate\
 	$U/_busy\
 
