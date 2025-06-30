@@ -147,6 +147,8 @@ UPROGS=\
 	$U/_clear\
 	$U/_pstate\
 	$U/_busy\
+	$U/_set\
+	$U/_ps\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

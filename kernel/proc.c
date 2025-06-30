@@ -55,6 +55,7 @@ procinit(void)
       initlock(&p->lock, "proc");
       p->state = UNUSED;
       p->kstack = KSTACK((int) (p - proc));
+      p->priority = 0;
   }
 }
 
@@ -720,6 +721,39 @@ pstate(void){
     struct proc *p = (&cpus[i])->proc;
     if(p != 0){
       printf("cpu %d: running process %d\n", i, p->pid);
+    }
+  }
+  return 0;
+}
+
+int
+set(int pid, int priority){
+    struct proc *p;
+    for(p = proc; p < &proc[NPROC]; p++){
+      if(p->pid == pid){
+        p->priority = priority;
+        printf("priority of %s (pid: %d) has been set to %d\n", p->name, p->pid, p->priority); // temporary
+        return 0;
+      }
+  }
+  return -1;
+}
+
+int ps(void){
+    struct proc *p;
+    static char *procstates[] = {
+  [UNUSED]    "unused",
+  [USED]      "used",
+  [SLEEPING]  "SLEEPING",
+  [RUNNABLE]  "RUNNABLE",
+  [RUNNING]   "RUNNING  ",
+  [ZOMBIE]    "zombie"
+  };
+  printf("pid\tname\tstate\t\tpriority\n");
+  printf("--------------------------------------\n");
+  for(p = proc; p < &proc[NPROC]; p++){
+    if(p->state == SLEEPING || p->state == RUNNABLE || p->state == RUNNING){
+      printf("%d\t%s\t%s\t%d\n", p->pid, p->name, procstates[p->state], p->priority);
     }
   }
   return 0;

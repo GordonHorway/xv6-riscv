@@ -22,3 +22,5 @@
 #define SYS_close  21
 #define SYS_getppid 22
 #define SYS_pstate 23
+#define SYS_set    24
+#define SYS_ps     25

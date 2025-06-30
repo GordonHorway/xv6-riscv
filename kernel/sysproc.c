@@ -33,6 +33,20 @@ sys_pstate(void){
 }
 
 uint64
+sys_ps(void){
+  return ps();
+}
+
+uint64
+sys_set(void){
+  int pid;
+  int priority;
+  argint(0, &pid);
+  argint(1, &priority);
+  return set(pid, priority);
+}
+
+uint64
 sys_fork(void)
 {
   return fork();

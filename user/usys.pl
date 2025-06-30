@@ -38,3 +38,5 @@ entry("sleep");
 entry("uptime");
 entry("getppid");
 entry("pstate");
+entry("set");
+entry("ps");
