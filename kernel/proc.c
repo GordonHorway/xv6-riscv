@@ -443,7 +443,7 @@ wait(uint64 addr)
 //  - eventually that process transfers control
 //    via swtch back to the scheduler.
 void
-scheduler(void)
+scheduler(void) // TODO:
 {
   struct proc *p;
   struct cpu *c = mycpu();
@@ -465,7 +465,7 @@ scheduler(void)
         p->state = RUNNING;
         c->proc = p;
         swtch(&c->context, &p->context);
-
+        
         // Process is done running for now.
         // It should have changed its p->state before coming back.
         c->proc = 0;
@@ -489,7 +489,7 @@ scheduler(void)
 // break in the few places where a lock is held but
 // there's no process.
 void
-sched(void)
+sched(void) // TODO:
 {
   int intena;
   struct proc *p = myproc();
@@ -728,15 +728,17 @@ pstate(void){
 
 int
 set(int pid, int priority){
-    struct proc *p;
-    for(p = proc; p < &proc[NPROC]; p++){
-      if(p->pid == pid){
-        p->priority = priority;
-        printf("priority of %s (pid: %d) has been set to %d\n", p->name, p->pid, p->priority); // temporary
-        return 0;
-      }
+  if(priority < 0 || priority > 9){
+    return -1;
   }
-  return -1;
+  struct proc *p;
+  for(p = proc; p < &proc[NPROC]; p++){
+    if(p->pid == pid){
+      p->priority = priority;
+      return 0;
+    }
+  }
+  return -2;
 }
 
 int ps(void){
@@ -750,7 +752,7 @@ int ps(void){
   [ZOMBIE]    "zombie"
   };
   printf("pid\tname\tstate\t\tpriority\n");
-  printf("--------------------------------------\n");
+  printf("----------------------------------------\n"); // just extended this a little for cosmetic purposes
   for(p = proc; p < &proc[NPROC]; p++){
     if(p->state == SLEEPING || p->state == RUNNABLE || p->state == RUNNING){
       printf("%d\t%s\t%s\t%d\n", p->pid, p->name, procstates[p->state], p->priority);

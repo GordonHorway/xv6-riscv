@@ -15,6 +15,11 @@ int main(int argc, char **argv){
     int setret = set(pid, priority);
 
     if(setret == -1){
+        fprintf(2, "priority number must be between 0 and 9 (inclusive)\n");
+        exit(1);
+    }
+
+    if(setret == -2){
         fprintf(2, "pid does not exist\n");
         exit(1);
     }
