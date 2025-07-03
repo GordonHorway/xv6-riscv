@@ -448,7 +448,7 @@ scheduler(void) // TODO:
 {
   struct proc *p;
   struct cpu *c = mycpu();
-
+  
   c->proc = 0;
   for(;;){
     // The most recent process to run may have had interrupts
@@ -733,9 +733,15 @@ set(int pid, int priority){
     return -1;
   }
   struct proc *p;
+  int found = 0;
   for(p = proc; p < &proc[NPROC]; p++){
+    acquire(&p->lock);
     if(p->pid == pid){
       p->priority = priority;
+      found = 1;
+    }
+    release(&p->lock);
+    if(found){
       return 0;
     }
   }
