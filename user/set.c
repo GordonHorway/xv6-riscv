@@ -12,15 +12,15 @@ int main(int argc, char **argv){
     int pid = atoi(argv[1]);
     int priority = atoi(argv[2]);
 
-    int setret = set(pid, priority);
+    int negative = (argv[2][0] == '-');
 
-    if(setret == -1){
-        fprintf(2, "priority number must be between 0 and 9 (inclusive)\n");
+    if(priority > 9 || negative){
+        fprintf(2, "select priority from 0-9 (inclusive)\n");
         exit(1);
     }
 
-    if(setret == -2){
-        fprintf(2, "pid does not exist\n");
+    if(set(pid, priority) < 0){
+        fprintf(2, "invalid pid used in set command\n");
         exit(1);
     }
 

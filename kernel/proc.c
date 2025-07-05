@@ -457,28 +457,40 @@ scheduler(void) // TODO:
     intr_on();
 
     int found = 0;
-    for(p = proc; p < &proc[NPROC]; p++) {
+
+    int maxIndex, maxPriority = -1;
+
+    for(int i = 0; i < NPROC; i++){
+      p = &proc[i];
       acquire(&p->lock);
-      if(p->state == RUNNABLE) {
-        // Switch to chosen process.  It is the process's job
-        // to release its lock and then reacquire it
-        // before jumping back to us.
-        p->state = RUNNING;
-        c->proc = p;
-        swtch(&c->context, &p->context);
-        
-        // Process is done running for now.
-        // It should have changed its p->state before coming back.
-        c->proc = 0;
+      if(p->state == RUNNABLE && p->priority > maxPriority){
+        maxPriority = p->priority;
+        maxIndex = i;
         found = 1;
       }
       release(&p->lock);
     }
+
     if(found == 0) {
       // nothing to run; stop running on this core until an interrupt.
       intr_on();
       asm volatile("wfi");
+      continue;
     }
+
+    struct proc *highestPriority = &proc[maxIndex];
+    acquire(&highestPriority->lock);
+
+    if(highestPriority->state != RUNNABLE){
+      release(&highestPriority->lock);
+      continue;
+    }
+
+    highestPriority->state = RUNNING;
+    c->proc = highestPriority;
+    swtch(&c->context, &highestPriority->context);
+    release(&highestPriority->lock);
+    c->proc = 0;
   }
 }
 
@@ -729,23 +741,17 @@ pstate(void){
 
 int
 set(int pid, int priority){
-  if(priority < 0 || priority > 9){
-    return -1;
-  }
   struct proc *p;
-  int found = 0;
   for(p = proc; p < &proc[NPROC]; p++){
     acquire(&p->lock);
     if(p->pid == pid){
       p->priority = priority;
-      found = 1;
+      release(&p->lock);
+      return pid;
     }
     release(&p->lock);
-    if(found){
-      return 0;
-    }
   }
-  return -2;
+  return -1;
 }
 
 int ps(void){
