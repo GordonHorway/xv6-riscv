@@ -125,7 +125,7 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
-  p->priority = 0;
+  p->priority = 9; // Initialize to highest number for lowest priority initially
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
@@ -458,15 +458,15 @@ scheduler(void) // TODO:
 
     int found = 0;
 
-    int maxIndex, maxPriority = -1;
+    struct proc *highestPriority = 0;
 
-    for(int i = 0; i < NPROC; i++){
-      p = &proc[i];
+    for(p = proc; p < &proc[NPROC]; p++){
       acquire(&p->lock);
-      if(p->state == RUNNABLE && p->priority > maxPriority){
-        maxPriority = p->priority;
-        maxIndex = i;
-        found = 1;
+      if(p->state == RUNNABLE){
+        if(highestPriority == 0 || highestPriority->priority < p->priority){
+          highestPriority = p;
+          found = 1;
+        }
       }
       release(&p->lock);
     }
@@ -478,7 +478,6 @@ scheduler(void) // TODO:
       continue;
     }
 
-    struct proc *highestPriority = &proc[maxIndex];
     acquire(&highestPriority->lock);
 
     if(highestPriority->state != RUNNABLE){
@@ -489,8 +488,9 @@ scheduler(void) // TODO:
     highestPriority->state = RUNNING;
     c->proc = highestPriority;
     swtch(&c->context, &highestPriority->context);
-    release(&highestPriority->lock);
     c->proc = 0;
+    release(&highestPriority->lock);
+    
   }
 }
 
