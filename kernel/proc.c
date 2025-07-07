@@ -742,16 +742,16 @@ pstate(void){
 int
 set(int pid, int priority){
   struct proc *p;
+  int found = 0;
   for(p = proc; p < &proc[NPROC]; p++){
     acquire(&p->lock);
     if(p->pid == pid){
       p->priority = priority;
-      release(&p->lock);
-      return pid;
+      found = 1;
     }
     release(&p->lock);
   }
-  return -1;
+  return found ? pid : -1;
 }
 
 int ps(void){
