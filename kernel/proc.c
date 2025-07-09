@@ -444,53 +444,51 @@ wait(uint64 addr)
 //  - eventually that process transfers control
 //    via swtch back to the scheduler.
 void
-scheduler(void) // TODO:
+scheduler(void)
 {
   struct proc *p;
   struct cpu *c = mycpu();
-  
+  int last_index = 0;
+
   c->proc = 0;
   for(;;){
-    // The most recent process to run may have had interrupts
-    // turned off; enable them to avoid a deadlock if all
-    // processes are waiting.
     intr_on();
 
+    int max_priority = 10;
     int found = 0;
 
-    struct proc *highestPriority = 0;
-
-    for(p = proc; p < &proc[NPROC]; p++){
+    for(int i = 0; i < NPROC; i++) {
+      p = &proc[i];
       acquire(&p->lock);
-      if(p->state == RUNNABLE){
-        if(highestPriority == 0 || highestPriority->priority < p->priority){
-          highestPriority = p;
-          found = 1;
-        }
+      if(p->state == RUNNABLE && p->priority < max_priority){
+        max_priority = p->priority;
       }
       release(&p->lock);
     }
 
-    if(found == 0) {
+    for(int i = 0; i < NPROC; i++){
+      int index = (last_index + i) % NPROC;
+      p = &proc[index];
+
+      acquire(&p->lock);
+      if(p->state == RUNNABLE && p->priority == max_priority){
+        p->state = RUNNING;
+        c->proc = p;
+        last_index = index;
+        swtch(&c->context, &p->context);
+        c->proc = 0;
+        release(&p->lock);
+        found = 1;
+        break;
+      }
+      release(&p->lock);
+    }
+
+    if(found == 0){
       // nothing to run; stop running on this core until an interrupt.
       intr_on();
       asm volatile("wfi");
-      continue;
     }
-
-    acquire(&highestPriority->lock);
-
-    if(highestPriority->state != RUNNABLE){
-      release(&highestPriority->lock);
-      continue;
-    }
-
-    highestPriority->state = RUNNING;
-    c->proc = highestPriority;
-    swtch(&c->context, &highestPriority->context);
-    c->proc = 0;
-    release(&highestPriority->lock);
-    
   }
 }
 
