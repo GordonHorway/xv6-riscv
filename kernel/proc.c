@@ -126,7 +126,7 @@ found:
   p->pid = allocpid();
   p->state = USED;
   if(p->pid == 1 || p->pid == 2){
-    p->priority = 8;
+    p->priority = 8; // TODO: Perhaps make the priority number lower for higher priority?????
   } else {
     p->priority = 9; // Initialize to highest number for lowest priority initially
   }
