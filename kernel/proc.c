@@ -125,7 +125,11 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
-  p->priority = 9; // Initialize to highest number for lowest priority initially
+  if(p->pid == 1 || p->pid == 2){
+    p->priority = 8;
+  } else {
+    p->priority = 9; // Initialize to highest number for lowest priority initially
+  }
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
