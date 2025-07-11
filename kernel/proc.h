@@ -106,4 +106,5 @@ struct proc {
   char name[16];               // Process name (debugging)
   
   int priority;                // Priority number for scheduler
+  int time_slice;              // Time slice number used in trap
 };

@@ -4,12 +4,10 @@
 
 int main(int argc, char **argv){
 
-    // Modified busy so that it doesn't hog the CPU
-
     while(1){
-        if(uptime() % 100 == 0){
+/*         if(uptime() % 100 == 0){
             sleep(1);
-        }
+        } */
     }
 
     exit(0);

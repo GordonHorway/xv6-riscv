@@ -126,10 +126,12 @@ found:
   p->pid = allocpid();
   p->state = USED;
   if(p->pid == 1 || p->pid == 2){
-    p->priority = 8; // TODO: Perhaps make the priority number lower for higher priority?????
+    p->priority = 0;
   } else {
-    p->priority = 9; // Initialize to highest number for lowest priority initially
+    p->priority = 4;
   }
+
+  p->time_slice = 3; // This number may need fine tuning
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
@@ -452,33 +454,30 @@ scheduler(void)
 {
   struct proc *p;
   struct cpu *c = mycpu();
-  int last_index = 0;
 
   c->proc = 0;
   for(;;){
     intr_on();
 
-    int max_priority = 10;
+    int maxPriority = 10;
     int found = 0;
 
     for(int i = 0; i < NPROC; i++) {
       p = &proc[i];
       acquire(&p->lock);
-      if(p->state == RUNNABLE && p->priority < max_priority){
-        max_priority = p->priority;
+      if(p->state == RUNNABLE && p->priority < maxPriority){
+        maxPriority = p->priority;
       }
       release(&p->lock);
     }
 
     for(int i = 0; i < NPROC; i++){
-      int index = (last_index + i) % NPROC;
-      p = &proc[index];
-
+      p = &proc[i];
       acquire(&p->lock);
-      if(p->state == RUNNABLE && p->priority == max_priority){
+      if(p->state == RUNNABLE && p->priority == maxPriority){
         p->state = RUNNING;
         c->proc = p;
-        last_index = index;
+        p->time_slice = DEFAULT_TIME_SLICE;
         swtch(&c->context, &p->context);
         c->proc = 0;
         release(&p->lock);
@@ -504,7 +503,7 @@ scheduler(void)
 // break in the few places where a lock is held but
 // there's no process.
 void
-sched(void) // TODO:
+sched(void)
 {
   int intena;
   struct proc *p = myproc();
@@ -745,13 +744,13 @@ int
 set(int pid, int priority){
   struct proc *p;
   int found = 0;
-  for(p = proc; p < &proc[NPROC]; p++){
-    acquire(&p->lock);
+  for(p = proc; p < &proc[NPROC] && !found; p++){
     if(p->pid == pid){
+      acquire(&p->lock);
       p->priority = priority;
+      release(&p->lock);
       found = 1;
     }
-    release(&p->lock);
   }
   return found ? pid : -1;
 }
@@ -766,11 +765,11 @@ int ps(void){
   [RUNNING]   "RUNNING  ",
   [ZOMBIE]    "zombie"
   };
-  printf("pid\tname\tstate\t\tpriority\n");
-  printf("----------------------------------------\n"); // just extended this a little for cosmetic purposes
+  printf("pid\tname\tstate\t\tpriority\ttime-slice\n");
+  printf("----------------------------------------------------------\n");
   for(p = proc; p < &proc[NPROC]; p++){
     if(p->state == SLEEPING || p->state == RUNNABLE || p->state == RUNNING){
-      printf("%d\t%s\t%s\t%d\n", p->pid, p->name, procstates[p->state], p->priority);
+      printf("%d\t%s\t%s\t%d\t\t%d\n", p->pid, p->name, procstates[p->state], p->priority, p->time_slice);
     }
   }
   return 0;
