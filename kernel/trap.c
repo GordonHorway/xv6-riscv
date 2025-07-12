@@ -159,13 +159,7 @@ kerneltrap()
 
   // give up the CPU if this is a timer interrupt.
   if(which_dev == 2 && myproc() != 0){
-    if(myproc()->time_slice > 0){
-      acquire(&myproc()->lock);
-      myproc()->time_slice--;
-      release(&myproc()->lock);
-    } else {
       yield();
-    }
   }
 
   // the yield() may have caused some traps to occur,

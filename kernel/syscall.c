@@ -101,7 +101,6 @@ extern uint64 sys_unlink(void);
 extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
-extern uint64 sys_getppid(void);
 extern uint64 sys_pstate(void);
 extern uint64 sys_set(void);
 extern uint64 sys_ps(void);
@@ -130,7 +129,6 @@ static uint64 (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
-[SYS_getppid] sys_getppid,
 [SYS_pstate] sys_pstate,
 [SYS_set]    sys_set,
 [SYS_ps]     sys_ps,

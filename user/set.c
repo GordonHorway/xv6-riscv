@@ -12,9 +12,9 @@ int main(int argc, char **argv){
     int pid = atoi(argv[1]);
     int priority = atoi(argv[2]);
 
-    int negative = (argv[2][0] == '-');
+    int isNegative = (argv[2][0] == '-');
 
-    if(priority > 9 || negative){
+    if(priority > 9 || isNegative){
         fprintf(2, "select priority from 0-9 (inclusive)\n");
         exit(1);
     }

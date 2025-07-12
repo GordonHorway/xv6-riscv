@@ -191,4 +191,5 @@ void            virtio_disk_intr(void);
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
 
+// Default time slice value for a process set to the RUNNING state
 #define DEFAULT_TIME_SLICE 3

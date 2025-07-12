@@ -131,7 +131,7 @@ found:
     p->priority = 4;
   }
 
-  p->time_slice = 3; // This number may need fine tuning
+  p->time_slice = 3;
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
@@ -462,8 +462,7 @@ scheduler(void)
     int maxPriority = 10;
     int found = 0;
 
-    for(int i = 0; i < NPROC; i++) {
-      p = &proc[i];
+    for(p = proc; p < &proc[NPROC]; p++) {
       acquire(&p->lock);
       if(p->state == RUNNABLE && p->priority < maxPriority){
         maxPriority = p->priority;
@@ -471,8 +470,7 @@ scheduler(void)
       release(&p->lock);
     }
 
-    for(int i = 0; i < NPROC; i++){
-      p = &proc[i];
+    for(p = proc; p < &proc[NPROC]; p++){
       acquire(&p->lock);
       if(p->state == RUNNABLE && p->priority == maxPriority){
         p->state = RUNNING;
@@ -709,18 +707,17 @@ procdump(void)
   }
 }
 
+// procstates string array used by both ps and pstate functions
+static char *procstates[] = {
+  [SLEEPING]  "SLEEPING",
+  [RUNNABLE]  "RUNNABLE",
+  [RUNNING]   "RUNNING  ",
+};
+
 // Prints out pid, name, status and parent for each process that is running, runnable or sleeping
 int 
 pstate(void){
   struct proc *p;
-    static char *procstates[] = {
-  [UNUSED]    "unused",
-  [USED]      "used",
-  [SLEEPING]  "SLEEPING",
-  [RUNNABLE]  "RUNNABLE",
-  [RUNNING]   "RUNNING  ",
-  [ZOMBIE]    "zombie"
-  };
   printf("pid\tname\tstate\t\tparent\n");
   printf("--------------------------------------\n");
   int total = 0;
@@ -740,6 +737,7 @@ pstate(void){
   return 0;
 }
 
+// sets a process with the specified pid to a new priority value
 int
 set(int pid, int priority){
   struct proc *p;
@@ -755,16 +753,10 @@ set(int pid, int priority){
   return found ? pid : -1;
 }
 
+// Very similar to pstate, except instead of having a parent column, there is a priority column
 int ps(void){
     struct proc *p;
-    static char *procstates[] = {
-  [UNUSED]    "unused",
-  [USED]      "used",
-  [SLEEPING]  "SLEEPING",
-  [RUNNABLE]  "RUNNABLE",
-  [RUNNING]   "RUNNING  ",
-  [ZOMBIE]    "zombie"
-  };
+  // Eventually get rid of the time slice column for the final version
   printf("pid\tname\tstate\t\tpriority\ttime-slice\n");
   printf("----------------------------------------------------------\n");
   for(p = proc; p < &proc[NPROC]; p++){

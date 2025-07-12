@@ -139,11 +139,8 @@ UPROGS=\
 	$U/_grind\
 	$U/_wc\
 	$U/_zombie\
-	$U/_mem\
-	$U/_uname\
 	$U/_exectime\
 	$U/_history\
-	$U/_getppid\
 	$U/_clear\
 	$U/_pstate\
 	$U/_busy\

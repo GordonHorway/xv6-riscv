@@ -22,7 +22,6 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
-int getppid(void);
 int pstate(void);
 int set(int pid, int priority);
 int ps(void);
