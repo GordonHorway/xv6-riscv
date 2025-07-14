@@ -78,7 +78,7 @@ usertrap(void)
 
   // give up the CPU if this is a timer interrupt.
   if(which_dev == 2 && myproc()->state == RUNNING){
-      if(myproc()->time_slice > 0){
+    if(myproc()->time_slice > 0){
       acquire(&myproc()->lock);
       myproc()->time_slice--;
       release(&myproc()->lock);

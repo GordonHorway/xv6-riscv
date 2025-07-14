@@ -125,13 +125,13 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
+  
   if(p->pid == 1 || p->pid == 2){
     p->priority = 0;
   } else {
     p->priority = 4;
   }
-
-  p->time_slice = 3;
+  p->time_slice = DEFAULT_TIME_SLICE;
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
@@ -454,6 +454,7 @@ scheduler(void)
 {
   struct proc *p;
   struct cpu *c = mycpu();
+  int foo = 0;
 
   c->proc = 0;
   for(;;){
@@ -470,11 +471,13 @@ scheduler(void)
       release(&p->lock);
     }
 
-    for(p = proc; p < &proc[NPROC]; p++){
+    for(int i = 0; i < NPROC; i++){
+      p = &proc[(foo + i) % NPROC];
       acquire(&p->lock);
       if(p->state == RUNNABLE && p->priority == maxPriority){
         p->state = RUNNING;
         c->proc = p;
+        foo = i;
         p->time_slice = DEFAULT_TIME_SLICE;
         swtch(&c->context, &p->context);
         c->proc = 0;
@@ -756,12 +759,11 @@ set(int pid, int priority){
 // Very similar to pstate, except instead of having a parent column, there is a priority column
 int ps(void){
     struct proc *p;
-  // Eventually get rid of the time slice column for the final version
-  printf("pid\tname\tstate\t\tpriority\ttime-slice\n");
-  printf("----------------------------------------------------------\n");
+  printf("pid\tname\tstate\t\tpriority\n");
+  printf("----------------------------------------\n");
   for(p = proc; p < &proc[NPROC]; p++){
     if(p->state == SLEEPING || p->state == RUNNABLE || p->state == RUNNING){
-      printf("%d\t%s\t%s\t%d\t\t%d\n", p->pid, p->name, procstates[p->state], p->priority, p->time_slice);
+      printf("%d\t%s\t%s\t%d\n", p->pid, p->name, procstates[p->state], p->priority);
     }
   }
   return 0;

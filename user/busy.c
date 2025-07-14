@@ -1,14 +1,13 @@
 #include "kernel/types.h"
-#include "kernel/stat.h"
 #include "user/user.h"
 
-int main(int argc, char **argv){
+int
+main(int argc, char **argv)
+{
 
-    while(1){
-/*         if(uptime() % 100 == 0){
-            sleep(1);
-        } */
-    }
+  while(1){
+    // Run forever
+  }
 
-    exit(0);
+  exit(0);
 }
