@@ -192,4 +192,6 @@ void            virtio_disk_intr(void);
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
 
 // Default time slice value for a process set to the RUNNING state
-#define DEFAULT_TIME_SLICE 3
+#define DEFAULT_TIME_SLICE 10
+#define MAX_TIME_SLICE 9
+#define MIN_TIME_SLICE 0
