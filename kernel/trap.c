@@ -80,11 +80,11 @@ usertrap(void)
  if (which_dev == 2) {
   if (p != 0 && p->state == RUNNING) {
     acquire(&p->lock);
-    if (p->time_slice > MIN_TIME_SLICE) {
+    if (p->time_slice > OUT_OF_TIME) {
       p->time_slice--;
     }
-    if (p->time_slice == 0) {
-      if (p->priority < MAX_TIME_SLICE) {
+    if (p->time_slice == OUT_OF_TIME) {
+      if (p->priority < MIN_PRIORITY) {
         p->priority++;
       }
       release(&p->lock);
