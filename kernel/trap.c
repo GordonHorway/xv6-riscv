@@ -77,15 +77,28 @@ usertrap(void)
     exit(-1);
 
   // give up the CPU if this is a timer interrupt.
-  if(which_dev == 2 && myproc()->state == RUNNING){
-    if(myproc()->time_slice > 0){
-      acquire(&myproc()->lock);
-      myproc()->time_slice--;
-      release(&myproc()->lock);
-    } else {
+ if (which_dev == 2) {
+  struct proc *p = myproc();
+
+  if (p != 0 && p->state == RUNNING) {
+    acquire(&p->lock);
+
+    if (p->time_slice > 0) {
+      p->time_slice--;
+    }
+
+    if (p->time_slice == 0) {
+      if (p->priority < 9) {
+        p->priority++;
+      }
+
+      release(&p->lock);
       yield();
+    } else {
+      release(&p->lock);
     }
   }
+}
 
   usertrapret();
 }
