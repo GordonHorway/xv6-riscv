@@ -78,7 +78,7 @@ usertrap(void)
 
   // give up the CPU if this is a timer interrupt.
  if (which_dev == 2) {
-  if (p != 0 && p->state == RUNNING) {
+  if (p->state == RUNNING) {
     acquire(&p->lock);
     if (p->time_slice > OUT_OF_TIME) {
       p->time_slice--;

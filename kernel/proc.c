@@ -756,7 +756,7 @@ set(int pid, int priority){
   return found ? pid : -1;
 }
 
-// Very similar to pstate, except instead of having a parent column, there is a priority column
+// very similar to pstate, except instead of having a parent column, there is a priority column
 int ps(void){
     struct proc *p;
   printf("pid\tname\tstate\t\tpriority\n");
