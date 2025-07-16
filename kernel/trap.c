@@ -10,6 +10,7 @@ struct spinlock tickslock;
 uint ticks;
 
 extern char trampoline[], uservec[], userret[];
+extern struct proc proc[NPROC];
 
 // in kernelvec.S, calls kerneltrap().
 void kernelvec();
@@ -84,8 +85,12 @@ usertrap(void)
       p->time_slice--;
     }
     if (p->time_slice == OUT_OF_TIME) {
-      if (p->priority < MIN_PRIORITY) {
-        p->priority++;
+      for(struct proc *p = proc; p < &proc[NPROC]; p++){
+        if(p->state == RUNNABLE && p->priority > 1){
+          acquire(&p->lock);
+          p->priority--;
+          release(&p->lock);
+        }
       }
       release(&p->lock);
       yield();
