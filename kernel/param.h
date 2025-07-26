@@ -12,4 +12,7 @@
 #define FSSIZE       2000  // size of file system in blocks
 #define MAXPATH      128   // maximum file path name
 #define USERSTACK    1     // user stack pages
-
+// Default time slice value for a process set to the RUNNING state
+#define DEFAULT_TIME_SLICE 10
+#define MIN_PRIORITY 9
+#define OUT_OF_TIME 0
